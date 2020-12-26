@@ -11,6 +11,12 @@
 #include "main.h"
 #include "http_page_tpl.h"
 
+
+
+    #ifdef CONFIG_LED_CONTROLLER
+   // #include "ledcontrol.h"
+    #endif
+
 #if CONFIG_USER_WEB_PRINT || CONFIG_USER_WEB_CONFIG
 #define USER_WEB_PRINT(s) {\
     httpd_resp_sendstr_chunk(req, s); \

@@ -1,4 +1,4 @@
-# esp-iot-home
+# esp-iot-rgb
 
 # Как собрать проект?
 
