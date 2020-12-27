@@ -50,9 +50,9 @@ void user_http_init(void *args)
 
     // пример как вынести некоторые каналы в отдельную группу
     // поставил каналу 3 (белый) группу 2
-    ledcontrol_channel_set_group(ch[3], 2);
+    //ledcontrol_channel_set_group(ch[3], 2);
     // создадим новую группу 2 с именем Белая подсветка
-    ledcontrol_http_add_group(ledc_h, "Белая подсветка", 2, 6);
+    //ledcontrol_http_add_group(ledc_h, "Белая подсветка", 2, 6);
 
 
 }
