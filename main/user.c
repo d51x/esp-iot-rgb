@@ -1,44 +1,41 @@
 #include "user.h"
 #include "button.h"
+#include "effects.h"
 
 static const char *TAG = "USER";
 
-void pressed1_cb();
-void pressed2_cb();
-void pressed3_cb();
-void hold_2s_cb();
-void hold_3s_cb();
-void hold_10s_cb();
+void btn_short_press_1_cb();
+void btn_short_press_2_cb();
+void btn_short_press_3_cb();
+void btn_hold_release_cb();
+void btn_hold_only_cb();
+
+
+static button_cb *short_pressed_cb;
+static button_handle_t btn_h;
 
 void user_setup(void *args)
 {
     ESP_LOGW(TAG, LOG_FMT() );
 
-    button_handle_t btn_g4_h = configure_push_button(GPIO_NUM_4, BUTTON_ACTIVE_LOW);
-    if (btn_g4_h) 
+    btn_h = configure_push_button(USER_BTN_GPIO, BUTTON_ACTIVE_LOW);
+    if (btn_h) 
     {
         // регистрируем коллбек короткого нажатия
-        #define MAX_SHORT_PRESSED_COUNT 3
-        button_cb *short_pressed_cb = calloc(MAX_SHORT_PRESSED_COUNT, sizeof(button_cb));
-        // заполним массив указателями на функции
-        short_pressed_cb[0] = &pressed1_cb;
-        short_pressed_cb[1] = NULL; //&pressed2_cb; // NULL если не требуется обрабатывать 2-ое (n-Раз) нажатие
-        short_pressed_cb[2] = &pressed3_cb;
-
-        // 1..3 коротких нажатий в течение 500 мсек
-        button_set_on_presscount_cb(btn_g4_h, 500, MAX_SHORT_PRESSED_COUNT, short_pressed_cb);
-
-        // сработает при отпускании после 1 сек не зависимо сколько держали по времени
-        #define BTN_HOLD_1_SEC 2
-        button_add_on_release_cb(btn_g4_h, BTN_HOLD_1_SEC, hold_2s_cb, NULL);
         
-        // сработает при удержании более 2 сек
-        #define BTN_HOLD_2_SEC 3
-        button_add_on_press_cb(btn_g4_h, BTN_HOLD_2_SEC, hold_3s_cb, NULL);        
+        short_pressed_cb = calloc(MAX_SHORT_PRESSED_COUNT, sizeof(button_cb));
+        
+        // заполним массив указателями на функции
+        short_pressed_cb[0] = &btn_short_press_1_cb;
+        short_pressed_cb[1] = &btn_short_press_2_cb;
+        short_pressed_cb[2] = &btn_short_press_3_cb;
 
-        // сработает при удержании более 10 сек
-        #define BTN_HOLD_10_SEC 10
-        button_add_on_press_cb(btn_g4_h, BTN_HOLD_10_SEC, hold_10s_cb, NULL);
+        button_set_on_presscount_cb(btn_h, USER_BTN_SHORT_PRESS_TIME, MAX_SHORT_PRESSED_COUNT, short_pressed_cb);
+        // сработает только после отпускания через указанное время
+        button_add_on_release_cb(btn_h, BTN_HOLD_AND_RELEASE_SEC, btn_hold_release_cb, NULL);
+        
+        // сработает при удержании более Х сек, не зависит от отпускания
+        button_add_on_press_cb(btn_h, BTN_HOLD_SEC, btn_hold_only_cb, NULL);        
     }
 
 }
@@ -144,32 +141,32 @@ void test_recv2(char *buf, void *args)
 }
 */
 
-void IRAM_ATTR pressed1_cb()
+void btn_short_press_1_cb()
 {
     ESP_LOGW(TAG, LOG_FMT() );
+    effects_next_effect();
 }
 
-void IRAM_ATTR pressed2_cb()
+void btn_short_press_2_cb()
 {
     ESP_LOGW(TAG, LOG_FMT() );
+    effects_prev_effect();
 }
 
-void IRAM_ATTR pressed3_cb()
+void btn_short_press_3_cb()
 {
     ESP_LOGW(TAG, LOG_FMT() );
+        effects_set_effect_by_name("rnd");
 }
 
-void hold_2s_cb()
+void btn_hold_release_cb()
 {
     ESP_LOGW(TAG, LOG_FMT() );
+    effects_set_effect_by_name("wheel");
 }
 
-void hold_3s_cb()
+void btn_hold_only_cb()
 {
     ESP_LOGW(TAG, LOG_FMT() );
-}
-
-void hold_10s_cb()
-{
-    ESP_LOGW(TAG, LOG_FMT() );
+    effects_stop_effect();
 }

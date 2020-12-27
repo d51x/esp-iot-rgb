@@ -23,6 +23,21 @@
     }
 #endif
 
+/*
+* короткое 1-ое нажатие - следующий эффект
+* короткое 2-ое нажатие - предыдущий эффект
+* короткое 3-ое нажатие -  эффект rnd
+* удержание 1 сек - stop эффект
+* отпускание 2 сек - эффект N настраиваемый
+*/
+
+
+#define USER_BTN_GPIO GPIO_NUM_4
+#define USER_BTN_SHORT_PRESS_TIME 400
+#define MAX_SHORT_PRESSED_COUNT 3       // кол-во коротких нажатий, которые отслеживаем
+#define BTN_HOLD_AND_RELEASE_SEC 2
+#define BTN_HOLD_SEC 1
+
 void user_setup(void *args);
 
 // функция вызывает в основном цикле каждую секунду
