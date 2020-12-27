@@ -169,4 +169,6 @@ void btn_hold_only_cb()
 {
     ESP_LOGW(TAG, LOG_FMT() );
     effects_stop_effect();
+    // reset color - off
+    rgb_ledc->set_color_int(0);
 }
