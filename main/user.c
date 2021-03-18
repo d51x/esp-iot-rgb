@@ -30,7 +30,7 @@ void user_setup(void *args)
         short_pressed_cb[1] = &btn_short_press_2_cb;
         short_pressed_cb[2] = &btn_short_press_3_cb;
 
-        button_set_on_presscount_cb(btn_h, USER_BTN_SHORT_PRESS_TIME, MAX_SHORT_PRESSED_COUNT, short_pressed_cb);
+        button_set_on_presscount_cb(btn_h, USER_BTN_SHORT_PRESS_TIME, MAX_SHORT_PRESSED_COUNT, short_pressed_cb, NULL);
         // сработает только после отпускания через указанное время
         button_add_on_release_cb(btn_h, BTN_HOLD_AND_RELEASE_SEC, btn_hold_release_cb, NULL);
         
